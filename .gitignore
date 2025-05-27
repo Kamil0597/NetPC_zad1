@@ -1,0 +1,15 @@
+# Visual Studio files
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+*.tmp
+*.sdf
+*.ipch
+*.opensdf
+*.tlog
+*.VC.db
+*.VC.VC.opendb

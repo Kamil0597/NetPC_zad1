@@ -1,0 +1,6 @@
+@NetPC_zadanie_HostAddress = http://localhost:5072
+
+GET {{NetPC_zadanie_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
