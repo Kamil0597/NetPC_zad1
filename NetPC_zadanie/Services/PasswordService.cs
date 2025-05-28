@@ -9,6 +9,10 @@ namespace NetPC_zadanie.Services
         private const int keySize = 32;
         private const int iterations = 100000;
 
+        /*
+         * Haszuje podane hasło przy użyciu algorytmu PBKDF2 z SHA256.
+         * Generuje sól i klucz hasła, zwracając je w formacie: iterations.salt.key.
+         */
         public static string HashPassword(string password)
         {
             using var rng = RandomNumberGenerator.Create();
@@ -21,6 +25,11 @@ namespace NetPC_zadanie.Services
             return $"{iterations}.{Convert.ToBase64String(salt)}.{Convert.ToBase64String(key)}";
         }
 
+        /*
+         * Sprawdza poprawność podanego hasła względem zahashowanego hasła.
+         * Porównuje wartości w bezpieczny sposób za pomocą FixedTimeEquals.
+         * Zwraca true, jeśli hasła się zgadzają.
+         */
         public static bool VerifyPassword(string password, string hashedPassword)
         {
             var parts = hashedPassword.Split('.');

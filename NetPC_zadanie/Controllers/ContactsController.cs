@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NetPC_zadanie.DTO;
 using NetPC_zadanie.Models;
@@ -18,54 +19,74 @@ namespace NetPC_zadanie.Controllers
             _logger = logger;
         }
 
+        /*
+         * Zwraca listę wszystkich kontaktów.
+         */
         [HttpGet]
         public ActionResult<IEnumerable<Contact>> GetAllContacts()
         {
             return _contactService.GetAllContacts();
         }
 
+        /*
+         * Zwraca kontakt na podstawie podanego ID.
+         * Zwraca 200 OK jeśli kontakt istnieje, lub 404 jeśli nie znaleziono.
+         */
         [HttpGet("{id:int}")]
         public ActionResult<Contact> GetContactById(int id)
         {
             var contact =  _contactService.GetContactById(id);
-
-            if(contact == null)
-            {
-                return NotFound();
-            }
+            if(contact == null) return NotFound();
             return Ok(contact);
         }
+
+        /*
+        * Tworzy nowy kontakt.
+        * Wymaga autoryzacji.
+        * Zwraca 201 Created z danymi kontaktu, lub 409 jeśli e-mail już istnieje.
+        */
+        [Authorize]
         [HttpPost]
         public ActionResult<Contact> CreateContact([FromBody] ContactDto dto)
         {
-            Console.WriteLine($"Received DTO: {dto}");
-            var contact = new Contact
+            try
             {
-                Name = dto.Name,
-                Surname = dto.Surname,
-                Password = dto.Password,
-                Email = dto.Email,
-                Phone = dto.Phone,
-            };
+                Console.WriteLine($"Received DTO: {dto}");
+                var contact = new Contact
+                {
+                    Name = dto.Name,
+                    Surname = dto.Surname,
+                    Password = dto.Password,
+                    Email = dto.Email,
+                    Phone = dto.Phone,
+                };
 
-            if (!DateTime.TryParse(dto.BirthDate, out var birthDate))
-            {
-                return BadRequest("Invalid BirthDate format");
+                if (!DateTime.TryParse(dto.BirthDate, out var birthDate))
+                    return BadRequest("Invalid BirthDate format");
+
+                contact.BirthDate = birthDate;
+
+                if (!Enum.TryParse(dto.Category, out Contact.CategoryEnum category))
+                    return BadRequest("Invalid Category value");
+
+                contact.Category = category;
+                contact.SubCategory = dto.SubCategory;
+
+                _contactService.CreateContact(contact);
+                return CreatedAtAction(nameof(GetContactById), new { id = contact.Id }, contact);
             }
-            contact.BirthDate = birthDate;
-
-            if (!Enum.TryParse(dto.Category, out Contact.CategoryEnum category))
+            catch(InvalidOperationException ex)
             {
-                return BadRequest("Invalid Category value");
+                return Conflict(new { message = ex.Message });
             }
-            contact.Category = category;
-
-            contact.SubCategory = dto.SubCategory;
-
-            _contactService.CreateContact(contact);
-            return CreatedAtAction(nameof(GetContactById), new { id = contact.Id }, contact);
         }
 
+        /*
+         * Aktualizuje istniejący kontakt na podstawie ID.
+         * Wymaga autoryzacji.
+         * Zwraca 204 NoContent jeśli aktualizacja się powiodła, lub 404 jeśli kontakt nie istnieje.
+         */
+        [Authorize]
         [HttpPut("{id:int}")]
         public IActionResult UpdateContact([FromBody] ContactDto dto, int id)
         {
@@ -77,9 +98,7 @@ namespace NetPC_zadanie.Controllers
 
             var existingContact = _contactService.GetContactById(id);
             if (existingContact == null)
-            {
                 return NotFound("Kontakt nie istnieje");
-            }
 
             // Uaktualnij pola kontaktu
             existingContact.Name = dto.Name;
@@ -87,17 +106,16 @@ namespace NetPC_zadanie.Controllers
             existingContact.Password = dto.Password;
             existingContact.Email = dto.Email;
             existingContact.Phone = dto.Phone;
-            if (!DateTime.TryParse(dto.BirthDate, out var birthDate))
-            {
-                return BadRequest("Invalid BirthDate format");
-            }
-            existingContact.BirthDate = birthDate;
-            if (!Enum.TryParse(dto.Category, out Contact.CategoryEnum category))
-            {
-                return BadRequest("Invalid Category value");
-            }
-            existingContact.Category = category;
 
+            if (!DateTime.TryParse(dto.BirthDate, out var birthDate))
+                return BadRequest("Invalid BirthDate format");
+
+            existingContact.BirthDate = birthDate;
+
+            if (!Enum.TryParse(dto.Category, out Contact.CategoryEnum category))
+                return BadRequest("Invalid Category value");
+
+            existingContact.Category = category;
             existingContact.SubCategory = dto.SubCategory;
 
             bool success = _contactService.UpdateContact(existingContact);
@@ -111,13 +129,19 @@ namespace NetPC_zadanie.Controllers
             }
         }
 
+        /*
+         * Usuwa kontakt na podstawie ID.
+         * Zwraca 204 NoContent jeśli usunięto, lub 404 jeśli kontakt nie istnieje.
+         */
         [HttpDelete("{id:int}")]
         public IActionResult DeleteContact(int id)
         {
             var existingContact = _contactService.GetContactById(id);
             if(existingContact == null) 
                 return NotFound();
+
             bool deleted = _contactService.DeleteContact(existingContact);
+
             if (deleted)
             {
                 return NoContent();

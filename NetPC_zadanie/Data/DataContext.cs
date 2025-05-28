@@ -9,6 +9,10 @@ namespace NetPC_zadanie.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Contact> Contacts { get; set; }
 
+        /*
+         * Konfiguracja modelu baz danych.
+         * Definiuje klucz główny dla encji Contact oraz ustawia automatyczne generowanie wartości Id.
+         */
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Contact>()

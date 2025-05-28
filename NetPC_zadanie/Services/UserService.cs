@@ -13,29 +13,40 @@ namespace NetPC_zadanie.Services
             _userRepository = userRepository;
         }
 
+        /*
+         * Aktualizuje dane użytkownika w bazie danych.
+         * Zwraca true, jeśli operacja się powiodła.
+         */
         public bool UpdateUser(User user)
         {
             return _userRepository.UpdateUser(user);
         }
 
+        /*
+         * Usuwa użytkownika z bazy danych.
+         * Zwraca true, jeśli operacja się powiodła.
+         */
         public bool DeleteUser(User user)
         {
             return _userRepository.DeleteUser(user);
         }
 
+        /*
+         * Pobiera użytkownika na podstawie nazwy użytkownika.
+         * Zwraca obiekt User lub null, jeśli nie znaleziono.
+         */
         public User? GetUserByName(string username)
         {
             return _userRepository.GetUserByName(username);
         }
 
+        /*
+         * Pobiera użytkownika na podstawie ID.
+         * Zwraca obiekt User lub null, jeśli nie znaleziono.
+         */
         public User? GetUserById(int Id)
         {
             return _userRepository.GetUserById(Id);
         }
-
-        //public List<User> GetAllUsers()
-        //{
-        //    return _userRepository.GetUsers();
-        //}
     }
 }

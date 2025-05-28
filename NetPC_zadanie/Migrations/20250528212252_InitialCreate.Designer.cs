@@ -12,7 +12,7 @@ using NetPC_zadanie.Data;
 namespace NetPC_zadanie.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250524134732_InitialCreate")]
+    [Migration("20250528212252_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -47,12 +47,16 @@ namespace NetPC_zadanie.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SubCategory")
-                        .HasColumnType("int");
+                    b.Property<string>("SubCategory")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Surname")
                         .IsRequired()

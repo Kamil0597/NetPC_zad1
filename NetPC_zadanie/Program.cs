@@ -7,6 +7,7 @@ using NetPC_zadanie.Repositories;
 using NetPC_zadanie.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +17,10 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:4200")
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
-
 
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(Program));
@@ -70,7 +71,7 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<DataContext>();
     context.Database.Migrate();
     DataInitializer dataInitializer = new DataInitializer();
-    dataInitializer.Initialize(app.Services);
+    dataInitializer.Initialize(scope.ServiceProvider);
 }
 
 // Configure the HTTP request pipeline.
