@@ -1,0 +1,12 @@
+<h2>Witaj w aplikacji Kontaktów</h2>
+<button (click)="goToContacts()">Wyświetl Listę Kontaktów</button>
+
+<div *ngIf="isLoggedIn; else notLoggedIn">
+  <p>Jesteś zalogowany jako: {{ authService.getCurrentUser() }}</p>
+  <button (click)="authService.logout()">Wyloguj się</button>
+</div>
+
+<ng-template #notLoggedIn>
+  <button (click)="goToLogin()">Zaloguj się</button>
+  <button (click)="goToRegister()">Zarejestruj się</button>
+</ng-template>

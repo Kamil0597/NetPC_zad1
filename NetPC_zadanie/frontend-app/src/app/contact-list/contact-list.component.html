@@ -1,0 +1,15 @@
+<h2>Lista kontaktów</h2>
+
+<button (click)="goToHome()">Wróć do głównego okna</button>
+
+<button *ngIf="isLoggedIn" (click)="addContact()">Dodaj kontakt</button>
+<button *ngIf="isLoggedIn" (click)="logout()">Wyloguj</button>
+<button *ngIf="!isLoggedIn" (click)="goToLogin()">Zaloguj się</button>
+<button *ngIf="!isLoggedIn" (click)="goToRegister()">Zarejestruj się</button>
+
+<ul>
+  <li *ngFor="let contact of contacts">
+    {{ contact.name }} {{ contact.surname }}
+    <button *ngIf="isLoggedIn" (click)="editContact(contact.id)">Edytuj</button>
+  </li>
+</ul>

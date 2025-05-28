@@ -1,0 +1,19 @@
+<h2>Logowanie</h2>
+
+<button (click)="goToHome()">Wroc do glownego okna</button>
+
+<form (ngSubmit)="onLogin()">
+  <div>
+    <label for="username">Nazwa użytkownika:</label>
+    <input type="text" id="username" [(ngModel)]="username" name="username" required>
+  </div>
+
+  <div>
+    <label for="password">Hasło:</label>
+    <input type="password" id="password" [(ngModel)]="password" name="password" required>
+  </div>
+
+  <button type="submit">Zaloguj się</button>
+</form>
+
+<p *ngIf="errorMessage" style="color:red">{{ errorMessage }}</p>
