@@ -32,7 +32,24 @@ export class EditComponent {
   constructor(private route: ActivatedRoute, private router: Router, private contactService: ContactService ) { }
 
   onSubmit() {
-    this.contactService.updateContact(this.contact.id, this.contact).subscribe({
+    const dto = {
+      name: this.contact.name,
+      surname: this.contact.surname,
+      password: this.contact.password,
+      email: this.contact.email,
+      phone: this.contact.phone,
+      birthDate: this.contact.birthDate,
+      category: typeof this.contact.category === 'number'
+        ? this.categories[this.contact.category]
+        : this.contact.category,
+      subCategory: typeof this.contact.subCategory === 'number'
+        ? this.subCategories[this.contact.subCategory]
+        : this.contact.subCategory
+    };
+
+    console.log('Dane wysyłane do PUT:', dto);
+
+    this.contactService.updateContact(this.contact.id, dto).subscribe({
       next: () => {
         console.log("Contact saved");
         //this.router.navigate(['/contacts', this.contact.id]);

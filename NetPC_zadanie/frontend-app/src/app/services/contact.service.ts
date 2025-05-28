@@ -27,13 +27,16 @@ export class ContactService {
     return this.http.get<Contact[]>(this.apiUrl);
   }
 
-  getContactById(id: number): Observable<Contact>
-  {
-    return this.http.get<Contact>(`${this.apiUrl}/${id}`);
+  getContactById(id: number) {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<Contact>(`${this.apiUrl}/${id}`, { headers });
   }
 
-  updateContact(id: number, contact: Contact): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, contact);
+  updateContact(id: number, dto: any) {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token || ''}`);
+    return this.http.put(`${this.apiUrl}/${id}`, dto, { headers });
   }
 
   createContact(contact: Contact): Observable<Contact> {
