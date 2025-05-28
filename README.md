@@ -73,14 +73,27 @@ Aplikacja pozwala na:
     ```
     dotnet ef database update
     ```
-3. Uruchom aplikację:
+3. ⚠️ **Uwaga:** Przed uruchomieniem upewnij się, że plik `appsettings.json` zawiera prawidłowy connection string dla Twojej lokalnej bazy danych SQL Server.
+   - Domyślnie jest ustawiony na:
+     ```json
+     "ConnectionStrings": {
+       "DefaultConnection": "Data Source=DESKTOP-TD1RTD6;Initial Catalog=NETPC;Integrated Security=True;"
+     }
+     ```
+   - **Zmień `Data Source` i `Initial Catalog`**, aby odpowiadały Twojemu środowisku.
+
+4. Uruchom aplikację (z profilem HTTPS):
     ```
-    dotnet run
+    dotnet run --launch-profile https
     ```
-4. Domyślny adres: `https://localhost:7138`
+5. Domyślny adres backendu: `https://localhost:7138`
+
+---
 
 ### Frontend (Angular)
 1. Otwórz folder z aplikacją frontendową.
+ 📁 Domyślnie znajduje się w podfolderze `frontend-app` (upewnij się, że wykonujesz poniższe polecenia właśnie tam!):
+   
 2. Zainstaluj zależności:
     ```
     npm install
@@ -89,10 +102,8 @@ Aplikacja pozwala na:
     ```
     ng serve
     ```
-4. Domyślny adres: `http://localhost:4200`
+4. Domyślny adres frontend: `http://localhost:4200`
 
 ## 📄 Uwagi
 
-- W trybie developerskim token JWT przechowywany jest w `localStorage`. W środowisku produkcyjnym rekomendowane jest użycie ciasteczek HttpOnly.
 - Hasła hashowane przy użyciu `Rfc2898DeriveBytes` (PBKDF2).
-- `withCredentials: true` w Angularze dla obsługi ciasteczek.
